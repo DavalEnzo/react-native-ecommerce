@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Alert} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Alert } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 export default function Panier({ navigation, decrementCartItems, clearCartItems }) {
@@ -22,13 +21,15 @@ export default function Panier({ navigation, decrementCartItems, clearCartItems 
     fetchPanierItems();
   }, []);
 
+  // Réduction de la quantité
   const reduceQuantity = (item) => {
     const newPanierItems = panierItems.map((panierItem) => {
       if (panierItem.id === item.id) {
-        panierItem.quantite -= 1;
-        decrementCartItems(1);
+        if (panierItem.quantite > 1) {
+          panierItem.quantite -= 1;
+          decrementCartItems(1);
+        }
       }
-
       return panierItem;
     });
 
@@ -37,25 +38,26 @@ export default function Panier({ navigation, decrementCartItems, clearCartItems 
     });
   };
 
+  // Augmentation de la quantité
   const addQuantity = (item) => {
     const newPanierItems = panierItems.map((panierItem) => {
       if (panierItem.id === item.id) {
         panierItem.quantite += 1;
       }
-
       return panierItem;
     });
 
     AsyncStorage.setItem('panier', JSON.stringify(newPanierItems)).then(() => {
       setPanierItems(newPanierItems);
     });
-  }
+  };
 
-  function deleteProduct(item) {
+  // Suppression d'un produit
+  const deleteProduct = (item) => {
     const newPanierItems = panierItems.filter((panierItem) => panierItem.id !== item.id);
 
-    if (item.quantite > 1) {
-      decrementCartItems(item.quantite - 1);
+    if (item.quantite > 0) {
+      decrementCartItems(item.quantite);
     }
 
     if (newPanierItems.length === 0) {
@@ -71,27 +73,25 @@ export default function Panier({ navigation, decrementCartItems, clearCartItems 
     AsyncStorage.setItem('panier', JSON.stringify(newPanierItems)).then(() => {
       setPanierItems(newPanierItems);
     });
-  }
+  };
 
   const renderPanierItem = ({ item }) => {
     return (
-      <View style={{flex:1, gap:20, justifyContent: 'space-between', alignItems: 'center', padding: 10, backgroundColor: 'lightgray', borderRadius: 10, marginBottom: 10 }}>
-        <Text style={{ fontSize: 30 }}>{item.name}</Text>
-        <Image source={{ uri: item.image }} style={{ width: 200, height: 200, borderRadius: 10, marginVertical: 10 }} />
-        <View style={{flex: 1, gap: 10, flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity style={{backgroundColor: 'red', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5, alignItems: 'center'}} onPress={() => reduceQuantity(item)}>
-            <Text style={{color: 'white', fontSize: 20}}>-</Text>
+      <View style={styles.itemContainer}>
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Image source={{ uri: item.image }} style={styles.itemImage} />
+        <View style={styles.quantityContainer}>
+          <TouchableOpacity style={styles.reduceButton} onPress={() => reduceQuantity(item)}>
+            <Text style={styles.buttonText}>-</Text>
           </TouchableOpacity>
-          <Text style={{ fontSize: 20 }}>Quantité: {item.quantite}</Text>
-          <TouchableOpacity style={{backgroundColor: 'green', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5, alignItems: 'center'}} onPress={() => addQuantity(item)}>
-            <Text style={{color: 'white', fontSize: 20}}>+</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.deleteButton} onPress={() => deleteProduct(item)}>
-            <Text style={styles.buttonText}>Supprimer du panier</Text>
+          <Text style={styles.quantityText}>Quantité: {item.quantite}</Text>
+          <TouchableOpacity style={styles.addButton} onPress={() => addQuantity(item)}>
+            <Text style={styles.buttonText}>+</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteProduct(item)}>
+          <Text style={styles.buttonText}>Supprimer du panier</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -99,14 +99,15 @@ export default function Panier({ navigation, decrementCartItems, clearCartItems 
   return (
     <View style={styles.container}>
       {panierItems.length > 0 ? (
-      <FlatList
-        data={panierItems}
-        renderItem={renderPanierItem}
-        keyExtractor={(item, index) => index}
-        contentContainerStyle={{ padding: 10 }}
-      /> ) : (
-        <View style={{flex:0, alignItems: 'center', gap: 25}}>
-          <Text style={{ fontSize: 30 }}>Votre panier est vide</Text>
+        <FlatList
+          data={panierItems}
+          renderItem={renderPanierItem}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={{ padding: 10 }}
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Votre panier est vide</Text>
           <MaterialCommunityIcons name="cart-off" size={70} />
         </View>
       )}
@@ -117,23 +118,63 @@ export default function Panier({ navigation, decrementCartItems, clearCartItems 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'white',
   },
-  buttonContainer: {
+  itemContainer: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: 'lightgray',
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  itemName: {
+    fontSize: 30,
+  },
+  itemImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  quantityContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    alignItems: 'center',
+    gap: 10,
+  },
+  reduceButton: {
+    backgroundColor: 'red',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  addButton: {
+    backgroundColor: 'green',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  quantityText: {
+    fontSize: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 20,
   },
   deleteButton: {
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 10,
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 20,
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 25,
+  },
+  emptyText: {
+    fontSize: 30,
   },
 });

@@ -6,15 +6,17 @@ const AddProduct = ({ navigation }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
+  const [image, setImage] = useState(''); // Champ image
 
   // Fonction pour ajouter un produit via l'API
   const handleSubmit = async () => {
-    if (name && price && description) {
+    if (name && price && description && image) {
       try {
-        await axios.post('http://192.168.1.74:5000/products', {
+        await axios.post('http://10.0.2.2:5000/products', {
           name,
           price: parseFloat(price),
           description,
+          image,  // Ajout de l'image
         });
         navigation.goBack(); // Retourne à la liste des produits après l'ajout
       } catch (error) {
@@ -44,6 +46,12 @@ const AddProduct = ({ navigation }) => {
         placeholder="Description"
         value={description}
         onChangeText={setDescription}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="URL de l'image"
+        value={image}
+        onChangeText={setImage}
         style={styles.input}
       />
       <Button title="Ajouter le produit" onPress={handleSubmit} />
