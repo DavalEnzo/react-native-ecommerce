@@ -10,6 +10,7 @@ products = [
         'name': 'Iphone 15 Pro Max',
         'price': 2000,
         'description': 'Le dernier Iphone',
+        'categorie': 'Téléphone',
         'image': 'https://proxymedia.woopic.com/api/v1/images/1618%2Fedithor%2Fterminaux%2F636x900-iPhone_15_Pro_Max_Noir-img3_6502245cc7020d1ca3f91d0a.png'
     },
     {
@@ -17,12 +18,23 @@ products = [
         'name': 'Jus d\'orange Joker',
         'price': 2,
         'description': 'Jus d\'orange pur',
+        'categorie': 'Boisson',
         'image': 'https://media.houra.fr/ART-IMG-XL/09/47/3123349014709-2.jpg'
     }
 ]
 
-@app.route('/products', methods=['GET'])
-def get_products():
+@app.route('/products', methods=['GET'], defaults={'search': None, 'type': None})
+@app.route('/products/<string:type>/<string:search>', methods=['GET'])
+def get_products(search, type):
+    if search is not None and type is not None:
+        search = search.lower()
+        if type == 'categorie':
+            products_filtered = [product for product in products if search in product['categorie'].lower()]
+        elif type == 'produit':
+            products_filtered = [product for product in products if search in product['name'].lower()]
+        else:
+            return jsonify({'message': 'Type de recherche invalide'}), 400
+        return jsonify(products_filtered)
     return jsonify(products)
 
 @app.route('/products/<int:product_id>', methods=['GET'])
