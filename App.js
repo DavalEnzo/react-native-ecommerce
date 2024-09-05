@@ -36,7 +36,9 @@ export default function App() {
             headerTitle: 'Easy Shop',
             headerRight: () => (
               <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('Panier')}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Panier')}
+                >
                   <Ionicons name="cart" size={30} color="dodgerblue" />
                   {cartItemsCount > 0 && (
                     <View style={{
@@ -62,12 +64,14 @@ export default function App() {
         >
           {props => <Home {...props} incrementCartItems={incrementCartItems} />}
         </Stack.Screen>
-
-        {/* Ajouter les nouveaux écrans */}
+        <Stack.Screen name="Panier"
+                      options={{ headerTitle: 'Panier' }}
+        >
+          {props => <Panier {...props} decrementCartItems={decrementCartItems} clearCartItems={clearCartItems} />}
+        </Stack.Screen>
         <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerTitle: 'Détails du produit' }} />
         <Stack.Screen name="UpdateProduct" component={UpdateProduct} options={{ headerTitle: 'Modifier le produit' }} />
         <Stack.Screen name="AddProduct" component={AddProduct} options={{ headerTitle: 'Ajouter un produit' }} />
-        <Stack.Screen name="Panier" component={Panier} options={{ headerTitle: 'Panier' }} />
       </Stack.Navigator>
       <Toast />
     </NavigationContainer>

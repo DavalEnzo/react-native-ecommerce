@@ -22,7 +22,7 @@ const UpdateProduct = ({ route, navigation }) => {
       };
 
       // Appel API pour mettre à jour le produit
-      await axios.put(`http://10.0.2.2:5000/products/${product.id}`, updatedProduct);
+      await axios.put(`http://192.168.1.74:5000/products/${product.id}`, updatedProduct);
 
       // Retourne à la liste des produits après la modification
       navigation.goBack();

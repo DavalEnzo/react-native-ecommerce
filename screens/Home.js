@@ -5,6 +5,7 @@ import { useIsFocused } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from "react-native-toast-message";
 import RNPickerSelect from 'react-native-picker-select';
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 export default function Home({ navigation, incrementCartItems }) {
   const [products, setProducts] = useState([]);
@@ -23,7 +24,7 @@ export default function Home({ navigation, incrementCartItems }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        await axios.get('http://10.0.2.2:5000/products').then((response) => {
+        await axios.get('http://192.168.1.74:5000/products').then((response) => {
           setProducts(response.data);
         });
       } catch (e) {
@@ -111,7 +112,10 @@ export default function Home({ navigation, incrementCartItems }) {
         <Text style={{ fontSize: 20, marginVertical: 10 }}>{item.categorie}</Text>
         <Text style={{ fontSize: 20 }}>Prix: {item.price} €</Text>
         <View style={styles.buttonContainer}>
-          {/* Détails du produit */}
+          <TouchableOpacity style={{ backgroundColor: 'limegreen', padding: 12, borderRadius: 10 }} onPress={() => addToPanier(item)}>
+            <MaterialCommunityIcons name={"cart-plus"} size={20} color={"white"} />
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.modifyButton} onPress={() => navigation.navigate('ProductDetails', { product: item })}>
             <Text style={styles.buttonText}>Détails</Text>
           </TouchableOpacity>
@@ -162,6 +166,7 @@ export default function Home({ navigation, incrementCartItems }) {
           <RNPickerSelect
             onValueChange={(value) => setSelectedType(value)}
             useNativeAndroidPickerStyle={false}
+            fixAndroidTouchableBug
             placeholder={{ label: 'Choisir un filtre', value: null }}
             value={selectedType}
             style={{ inputAndroid: { minWidth: '20%', height: 40, borderColor: 'gray', borderWidth: 1, borderStyle: 'solid', borderRadius: 10, padding: 10 }, inputIOS: { minWidth: '20%', height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10, padding: 10 } }}

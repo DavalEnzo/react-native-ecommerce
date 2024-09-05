@@ -11,7 +11,7 @@ const AddProduct = ({ navigation }) => {
   const handleSubmit = async () => {
     if (name && price && description) {
       try {
-        await axios.post('http://10.0.2.2:5000/products', {
+        await axios.post('http://192.168.1.74:5000/products', {
           name,
           price: parseFloat(price),
           description,
