@@ -23,7 +23,7 @@ export default function Home({ navigation, incrementCartItems }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        await axios.get('http://192.168.1.74:5000/products').then((response) => {
+        await axios.get('http://10.0.2.2:5000/products').then((response) => {
           setProducts(response.data);
         });
       } catch (e) {
@@ -111,24 +111,26 @@ export default function Home({ navigation, incrementCartItems }) {
         <Text style={{ fontSize: 20, marginVertical: 10 }}>{item.categorie}</Text>
         <Text style={{ fontSize: 20 }}>Prix: {item.price} €</Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.modifyButton} onPress={() => addToPanier(item)}>
-            <Text style={styles.buttonText}>Ajouter au panier</Text>
+          {/* Détails du produit */}
+          <TouchableOpacity style={styles.modifyButton} onPress={() => navigation.navigate('ProductDetails', { product: item })}>
+            <Text style={styles.buttonText}>Détails</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.modifyButton}
-                            onPress={() => navigation.navigate('UpdateProduct')}>
+          
+          {/* Modifier le produit */}
+          <TouchableOpacity style={styles.modifyButton} onPress={() => navigation.navigate('UpdateProduct', { product: item })}>
             <Text style={styles.buttonText}>Modifier</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.deleteButton}
-                            onPress={() => alerteSuppression(item)}>
+          
+          {/* Supprimer le produit */}
+          <TouchableOpacity style={styles.deleteButton} onPress={() => alerteSuppression(item)}>
             <Text style={styles.buttonText}>Supprimer</Text>
           </TouchableOpacity>
         </View>
       </View>
     );
-  }
+  };
 
   useEffect(() => {
-
     const searchProducts = async () => {
       try {
 
