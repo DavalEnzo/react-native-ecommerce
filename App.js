@@ -6,7 +6,6 @@ import Home from './screens/Home';
 import ProductDetails from './screens/ProductDetails'; 
 import UpdateProduct from './screens/UpdateProduct'; 
 import AddProduct from './screens/AddProduct'; 
-import SalesStatistics from './screens/SalesStatistics'; // Import des statistiques de vente
 import RestockAlerts from './screens/RestockAlerts'; // Import des alertes de réapprovisionnement
 import Panier from "./screens/Panier";
 import Toast from 'react-native-toast-message';
@@ -74,7 +73,6 @@ export default function App() {
         <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerTitle: 'Détails du produit' }} />
         <Stack.Screen name="UpdateProduct" component={UpdateProduct} options={{ headerTitle: 'Modifier le produit' }} />
         <Stack.Screen name="AddProduct" component={AddProduct} options={{ headerTitle: 'Ajouter un produit' }} />
-        <Stack.Screen name="SalesStatistics" component={SalesStatistics} options={{ headerTitle: 'Statistiques de Vente' }} />
         <Stack.Screen name="RestockAlerts" component={RestockAlerts} options={{ headerTitle: 'Alertes de Réapprovisionnement' }} />
       </Stack.Navigator>
       <Toast />
