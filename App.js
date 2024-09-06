@@ -3,12 +3,13 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from './screens/Home';
-import ProductDetails from './screens/ProductDetails'; // Détails du produit
-import UpdateProduct from './screens/UpdateProduct'; // Mise à jour d'un produit
-import AddProduct from './screens/AddProduct'; // Ajout d'un produit
-import Ionicons from '@expo/vector-icons/Ionicons';
+import ProductDetails from './screens/ProductDetails'; 
+import UpdateProduct from './screens/UpdateProduct'; 
+import AddProduct from './screens/AddProduct'; 
+import RestockAlerts from './screens/RestockAlerts'; // Import des alertes de réapprovisionnement
 import Panier from "./screens/Panier";
 import Toast from 'react-native-toast-message';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
 
@@ -72,6 +73,7 @@ export default function App() {
         <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerTitle: 'Détails du produit' }} />
         <Stack.Screen name="UpdateProduct" component={UpdateProduct} options={{ headerTitle: 'Modifier le produit' }} />
         <Stack.Screen name="AddProduct" component={AddProduct} options={{ headerTitle: 'Ajouter un produit' }} />
+        <Stack.Screen name="RestockAlerts" component={RestockAlerts} options={{ headerTitle: 'Alertes de Réapprovisionnement' }} />
       </Stack.Navigator>
       <Toast />
     </NavigationContainer>

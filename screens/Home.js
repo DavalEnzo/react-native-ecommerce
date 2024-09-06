@@ -24,7 +24,7 @@ export default function Home({ navigation, incrementCartItems }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        await axios.get('http://192.168.1.74:5000/products').then((response) => {
+        await axios.get('http://10.0.2.2:5000/products').then((response) => {
           setProducts(response.data);
         });
       } catch (e) {
@@ -95,7 +95,7 @@ export default function Home({ navigation, incrementCartItems }) {
 
   const deleteProduct = async (product) => {
     try {
-      await axios.delete(`http://192.168.1.74:5000/products/${product.id}`);
+      await axios.delete(`http://10.0.2.2:5000/products/${product.id}`);
       const newProducts = products.filter((item) => item.id !== product.id);
       setProducts(newProducts);
       deleteToast(product);
@@ -119,12 +119,12 @@ export default function Home({ navigation, incrementCartItems }) {
           <TouchableOpacity style={styles.modifyButton} onPress={() => navigation.navigate('ProductDetails', { product: item })}>
             <Text style={styles.buttonText}>Détails</Text>
           </TouchableOpacity>
-          
+
           {/* Modifier le produit */}
           <TouchableOpacity style={styles.modifyButton} onPress={() => navigation.navigate('UpdateProduct', { product: item })}>
             <Text style={styles.buttonText}>Modifier</Text>
           </TouchableOpacity>
-          
+
           {/* Supprimer le produit */}
           <TouchableOpacity style={styles.deleteButton} onPress={() => alerteSuppression(item)}>
             <Text style={styles.buttonText}>Supprimer</Text>
@@ -139,13 +139,13 @@ export default function Home({ navigation, incrementCartItems }) {
       try {
 
         if(search === '') {
-          await axios.get('http://192.168.1.74:5000/products').then((response) => {
+          await axios.get('http://10.0.2.2:5000/products').then((response) => {
             setProducts(response.data);
           });
           return;
         }
 
-        await axios.get(`http://192.168.1.74:5000/products/${selectedType}/${search}`).then((response) => {
+        await axios.get(`http://10.0.2.2:5000/products/${selectedType}/${search}`).then((response) => {
           setProducts(response.data);
         });
       } catch (e) {
@@ -159,22 +159,22 @@ export default function Home({ navigation, incrementCartItems }) {
   return (
     <View style={styles.container}>
       <View style={{ flex: 1, gap: 45, marginTop: 20, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center' }}>Bienvenue chez Easy Shop</Text>
+        <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center' }}>Bienvenue chez Easy Shop</Text>
         <View style={{ flex: 0, flexDirection:'row', gap:5, justifyContent: 'center', alignItems: 'flex-end' }}>
           <View style={{ flex: 0, gap: 5, justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={{ fontSize: 18 }}>Filtrer par:</Text>
-          <RNPickerSelect
-            onValueChange={(value) => setSelectedType(value)}
-            useNativeAndroidPickerStyle={false}
-            fixAndroidTouchableBug
-            placeholder={{ label: 'Choisir un filtre', value: null }}
-            value={selectedType}
-            style={{ inputAndroid: { minWidth: '20%', height: 40, borderColor: 'gray', borderWidth: 1, borderStyle: 'solid', borderRadius: 10, padding: 10 }, inputIOS: { minWidth: '20%', height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10, padding: 10 } }}
-            items={categories}
-          />
+            <Text style={{ fontSize: 18 }}>Filtrer par:</Text>
+            <RNPickerSelect
+              onValueChange={(value) => setSelectedType(value)}
+              useNativeAndroidPickerStyle={false}
+              fixAndroidTouchableBug
+              placeholder={{ label: 'Choisir un filtre', value: null }}
+              value={selectedType}
+              style={{ inputAndroid: { minWidth: '20%', height: 40, borderColor: 'gray', borderWidth: 1, borderStyle: 'solid', borderRadius: 10, padding: 10 }, inputIOS: { minWidth: '20%', height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10, padding: 10 } }}
+              items={categories}
+            />
           </View>
-        <TextInput style={{ width: '70%', height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10, padding: 10 }}
-                    placeholder="Rechercher un produit" value={search} onChangeText={(text) => setSearch(text)} />
+          <TextInput style={{ width: '70%', height: 40, borderColor: 'gray', borderWidth: 1, borderRadius: 10, padding: 10 }}
+                     placeholder="Rechercher un produit" value={search} onChangeText={(text) => setSearch(text)} />
         </View>
 
         <FlatList data={products} renderItem={(item) => renderProduct(item)} keyExtractor={(item) => item.id} />
@@ -184,6 +184,9 @@ export default function Home({ navigation, incrementCartItems }) {
                           onPress={() => navigation.navigate('AddProduct')}>
           <Text style={styles.buttonText}>Ajouter un produit</Text>
         </TouchableOpacity>
+      <TouchableOpacity style={{backgroundColor: 'orange', padding: 12, borderRadius: 10, marginTop: 10}} onPress={() => navigation.navigate('RestockAlerts')}>
+        <Text style={styles.buttonText}>Alertes de Réapprovisionnement</Text>
+      </TouchableOpacity>
       </View>
     </View>
   );
